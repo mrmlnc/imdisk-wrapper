@@ -1,0 +1,45 @@
+{
+  "name": "imdisk-wrapper",
+  "version": "1.0.0",
+  "description": "ImDisk wrapper to create and delete virtual disks",
+  "license": "MIT",
+  "repository": "mrmlnc/imdisk-wrapper",
+  "author": {
+    "name": "Denis Malinochkin",
+    "url": "canonium.com"
+  },
+  "scripts": {
+    "test": "xo && node test.js"
+  },
+  "keywords": [
+    "windows",
+    "ram",
+    "ramdisk",
+    "imdisk",
+    "virtual"
+  ],
+  "files": [
+    "README.md",
+    "index.js"
+  ],
+  "dependencies": {
+    "windows-drive-letters": "^2.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.2.0",
+    "xo": "^0.9.0"
+  },
+  "xo": {
+    "space": true,
+    "rules": {
+      "object-curly-spacing": [
+        2,
+        "always"
+      ],
+      "space-before-function-paren": 0
+    },
+    "envs": [
+      "node"
+    ]
+  }
+}
