@@ -28,7 +28,7 @@ imDisk.createDisk({ size: '32M' }, function(err, info) {
 #### .removeDisk(label, callback)
 
 ```js
-imDisk.removeDisk('X', function(err, info) {
+imDisk.removeDisk('M', function(err, info) {
   if (err) {
     throw err;
   } else {
@@ -44,7 +44,7 @@ imDisk.removeDisk('X', function(err, info) {
 Delete a virtual disk, even if it is performing the task.
 
 ```js
-imDisk.removeDiskForce('X', function(err, info) {
+imDisk.removeDiskForce('M', function(err, info) {
   if (err) {
     throw err;
   } else {

@@ -1,6 +1,6 @@
 {
   "name": "imdisk-wrapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ImDisk wrapper to create and delete virtual disks",
   "license": "MIT",
   "repository": "mrmlnc/imdisk-wrapper",
