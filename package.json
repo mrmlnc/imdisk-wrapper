@@ -8,6 +8,12 @@
     "name": "Denis Malinochkin",
     "url": "canonium.com"
   },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "os": [
+    "win32"
+  ],
   "scripts": {
     "test": "xo && node test.js"
   },
