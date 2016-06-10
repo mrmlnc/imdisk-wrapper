@@ -1,116 +1,95 @@
-var cp = require('child_process');
-var driveLetters = require('windows-drive-letters');
+'use strict';
 
-/**
- * Checking installation ImDisk
- *
- * @returns {boolean}
- */
-var checkImDisk = function() {
-  var test = cp.execSync('imdisk --version');
-  return (/olof@ltr-data\.se/.test(test) && /Olof Lagerkvist/.test(test));
-};
+const childProcess = require('child_process');
+const co = require('co');
+const driveLetters = require('windows-drive-letters');
 
-/**
- * Checking the value of the transmitted size of the disk
- *
- * @param {string} size
- * @returns {boolean}
- */
-var checkSize = function(size) {
-  return /(b|k|m|g|t|K|M|G|T)/.test(size);
-};
+function exec(command, options) {
+  return new Promise((resolve, reject) => {
+    childProcess.exec(command, options, (err, stdout) => {
+      if (err) {
+        reject(err);
+      }
 
-/**
- * Initialization()
- *
- * @constructor
- */
-function Imdisk() {
-  this.imdisk = checkImDisk();
+      resolve(stdout);
+    });
+  });
 }
 
-module.exports = new Imdisk();
+function testVersion(size) {
+  return /\d+(?:b|k|m|g|t|K|M|G|T){1}$/.test(size);
+}
 
-/**
- * Preparation of the command to create a disc
- *
- * @param {object} op
- * @returns {string}
- * @private
- */
-Imdisk.prototype._prepareCommand = function(op) {
-  this.label = (op.label) ? op.label : driveLetters.randomLetterSync();
+function create(label, size, options) {
+  options = Object.assign({
+    imdiskPath: 'imdisk',
+    fileSystem: 'ntfs',
+    command: null
+  }, options);
 
-  return 'imdisk -a -s ' + op.size + ' -m ' + this.label + ': -t vm -p "/fs:ntfs /q /y"';
-};
+  return co(function* () {
+    if (!label) {
+      label = yield driveLetters.randomLetter();
+    }
 
-/**
- * Remove virtual disk
- *
- * @param {string} label
- * @param {string} force
- * @param {function} cb
- * @private
- */
-Imdisk.prototype._removeDisk = function(label, force, cb) {
-  if (this.imdisk) {
-    cp.exec('imdisk ' + force + ' -m ' + label + ':', function(err, stdout, stderr) {
-      if (err) {
-        cb(stderr);
-      } else {
-        cb(null, {
-          status: 'ok',
-          label: label
-        });
-      }
-    });
-  } else {
-    cb(new Error('ImDisk not found or invalid data format: size (b|k|m|g|t|K|M|G|T).'));
-  }
-};
+    if (!size) {
+      return new Error('Size option is required');
+    }
 
-/**
- * Create virtual disk
- *
- * @param {object} op
- * @param {function} cb
- */
-Imdisk.prototype.createDisk = function(op, cb) {
-  if (this.imdisk && checkSize(op.size)) {
-    var _that = this;
-    cp.exec(this._prepareCommand(op), function(err, stdout, stderr) {
-      if (err) {
-        cb(stderr);
-      } else {
-        cb(null, {
-          status: 'ok',
-          size: op.size,
-          label: _that.label
-        });
-      }
-    });
-  } else {
-    cb(new Error('ImDisk not found or invalid data format: size (b|k|m|g|t|K|M|G|T).'));
-  }
-};
+    if (!testVersion(size)) {
+      return new Error('Wrong size format. Use `b, k, m, g, t, K, M, G, T` suffix');
+    }
 
-/**
- * Remove virtual disk
- *
- * @param {string} label
- * @param {function} cb
- */
-Imdisk.prototype.removeDisk = function(label, cb) {
-  this._removeDisk(label, '-d', cb);
-};
+    try {
+      yield exec(`${options.imdiskPath} --version`);
+    } catch (err) {
+      return new Error('ImDisk not found');
+    }
 
-/**
- * Remove virtual disk with force
- *
- * @param {string} label
- * @param {function} cb
- */
-Imdisk.prototype.removeDiskForce = function(label, cb) {
-  this._removeDisk(label, '-D', cb);
-};
+    if (!options.command) {
+      options.command = `${options.imdiskPath} -a -s ${size} -m ${label}: -t vm -p "/fs:${options.fileSystem} /q /y"`;
+    }
+
+    try {
+      yield exec(options.command);
+      return {
+        label: label,
+        size: size
+      };
+    } catch (err) {
+      return err;
+    }
+  });
+}
+
+module.exports.create = create;
+
+function remove(label, options) {
+  options = Object.assign({
+    imdiskPath: 'imdisk',
+    force: false,
+    command: null
+  }, options);
+
+  return co(function* () {
+    if (!label) {
+      return new Error('Label is required');
+    }
+
+    if (!options.command) {
+      const force = (options.force) ? '-D' : '-d';
+      options.command = `imdisk ${force} -m ${label}:`;
+    }
+
+    try {
+      yield exec(options.command);
+      return {
+        label: label
+      };
+    } catch (err) {
+      return err;
+    }
+  });
+}
+
+module.exports.remove = remove;

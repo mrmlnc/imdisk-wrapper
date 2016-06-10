@@ -1,60 +1,56 @@
-# ImDisk-wrapper
+# imdisk-wrapper
 
-ImDisk wrapper to create and delete virtual disks.
+> A simple wrapper for ImDisk to create (only VM) and delete virtual disks.
+
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/b707ardgrdf0lwa3?svg=true)](https://ci.appveyor.com/project/mrmlnc/imdisk-wrapper)
+[![NPM version](https://img.shields.io/npm/v/imdisk-wrapper.svg?style=flat-square)](https://www.npmjs.com/package/imdisk-wrapper)
+[![devDependency Status](https://img.shields.io/david/mrmlnc/imdisk-wrapper.svg?style=flat-square)](https://david-dm.org/mrmlnc/imdisk-wrapper#info=dependencies)
+[![devDependency Status](https://img.shields.io/david/dev/mrmlnc/imdisk-wrapper.svg?style=flat-square)](https://david-dm.org/mrmlnc/imdisk-wrapper#info=devDependencies)
+
+## Install
+
+```shell
+$ npm i -S imdisk-wrapper
+```
 
 ## Usage
 
-This wrapper is able to create only VM disks type.
-
-#### Options
-
-  - Size **(required)**: value (b, k, m, g, t, K, M, G or T)
-  - Label **(options)**: Letter of the English alphabet (A..Z)
-  
-#### .createDisk(options, callback)
+### create(label, size, [options])
 
 ```js
-imDisk.createDisk({ size: '32M' }, function(err, info) {
-  if (err) {
-    throw err;
-  } else {
-    console.log(info);
-  }
+imDisk.create('Z', '32M').then((res) => {
+  console.log(res); // { label: 'Z', size: '32M' }
+}).catch((err) => {
+  console.log(err);
 });
-
-// => { status: 'ok', size: '32M', label: 'M' }
 ```
 
-#### .removeDisk(label, callback)
+**options:**
+
+  * `imdiskPath` [`string` | default: `imdisk`] - A path to ImDisk.
+  * `fileSystem` [`string` | default: `ntfs`] - Disk file system.
+  * `command` [`string` | default: `null`] - Custom command that replaces the command of creating disk in this module.
+
+### remove(label, [options])
 
 ```js
-imDisk.removeDisk('M', function(err, info) {
-  if (err) {
-    throw err;
-  } else {
-    console.log(info);
-  }
+imDisk.create('Z').then((res) => {
+  console.log(res); // { label: 'Z' }
+}).catch((err) => {
+  console.log(err);
 });
-
-// => { status: 'ok', label: 'M' }
 ```
 
-#### .removeDiskForce(label, callback)
+**options:**
 
-Delete a virtual disk, even if it is performing the task.
+  * `imdiskPath` [`string` | default: `imdisk`] - A path to ImDisk.
+  * `force` [`boolean` | default: `false`] -  Use `true` to force removal even if the device is in use.
+  * `command` [`string` | default: `null`] - Custom command that replaces the command of removing disk in this module.
 
-```js
-imDisk.removeDiskForce('M', function(err, info) {
-  if (err) {
-    throw err;
-  } else {
-    console.log(info);
-  }
-});
+## Changelog
 
-// => { status: 'ok', label: 'M' }
-```
+See the [Releases section of our GitHub project](https://github.com/mrmlnc/imdisk-wrapper/releases) for changelogs for each release version.
 
 ## License
 
-MIT.
+This software is released under the terms of the MIT license.
