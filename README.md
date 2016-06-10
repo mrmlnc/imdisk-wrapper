@@ -25,6 +25,11 @@ imDisk.create('Z', '32M').then((res) => {
 });
 ```
 
+**arguments:**
+
+  * `label` [`string` | default: random available letter] - Available drive letter is determined by [windows-drive-letters](https://github.com/mrmlnc/windows-drive-letters).
+  * `size` [`string` | default: `null`] - The size of the disk in the format `number[b, k, m, g, t, K, M, G, T]`.
+
 **options:**
 
   * `imdiskPath` [`string` | default: `imdisk`] - A path to ImDisk.
@@ -40,6 +45,10 @@ imDisk.create('Z').then((res) => {
   console.log(err);
 });
 ```
+
+**arguments:**
+  
+  * `label` [`string` | default: `null`] - The drive letter to remove.
 
 **options:**
 
