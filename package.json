@@ -32,8 +32,8 @@
     "windows-drive-letters": "^3.0.0"
   },
   "devDependencies": {
-    "mocha": "^2.5.3",
-    "xo": "^0.15.1"
+    "mocha": "^3.3.0",
+    "xo": "^0.18.2"
   },
   "xo": {
     "rules": {

@@ -1,5 +1,7 @@
 # imdisk-wrapper
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mrmlnc/imdisk-wrapper.svg)](https://greenkeeper.io/)
+
 > A simple wrapper for ImDisk to create (only VM) and delete virtual disks.
 
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/b707ardgrdf0lwa3?svg=true)](https://ci.appveyor.com/project/mrmlnc/imdisk-wrapper)
